@@ -1,90 +1,158 @@
-# SignSpeak AI: Real-Time Sign Language to Speech Translator
+# 🚀 SignSpeak AI – Real-Time Sign Language to Speech
 
-SignSpeak AI is a computer vision and machine learning application designed to bridge the communication gap for the hearing and speech-impaired. The system utilizes MediaPipe for high-fidelity hand landmark detection and a custom-trained TensorFlow model to recognize sign language alphabets and convert them into audible speech in real-time.
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-Keras-orange)
+![MediaPipe](https://img.shields.io/badge/MediaPipe-Vision-green)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
+---
+
+## 📌 Overview
+
+**SignSpeak AI** is a real-time sign language recognition system that converts hand gestures into **text and speech** using Computer Vision and Machine Learning.
+
+This project helps bridge communication gaps for people with hearing or speech impairments.
+
+---
 
 ## ✨ Features
-* **Real-Time Detection**: Processes video frames instantly to identify hand gestures.
-* **Coordinate Normalization**: Uses wrist-centric and zoom-invariant scaling to ensure high accuracy regardless of hand position or distance from the camera.
-* **Text-to-Speech (TTS)**: Automatically announces the recognized letter using the Google Text-to-Speech (gTTS) library.
-* **High Accuracy**: Optimized Neural Network architecture achieving over 98% validation accuracy on the alphabet dataset.
 
-## 🛠️ Tech Stack
-* **Language**: Python 3.10.11
-* **Hand Tracking**: MediaPipe (Vision Tasks API)
-* **Deep Learning**: TensorFlow / Keras
-* **Computer Vision**: OpenCV
-* **Audio**: gTTS (Google Text-to-Speech)
+- 🎥 Real-time hand gesture detection (webcam)
+- 🤖 Deep learning model (TensorFlow/Keras)
+- ✋ Hand tracking using MediaPipe
+- 🔊 Text-to-Speech output (gTTS)
+- 📊 High accuracy (~98%)
+- ⚡ Fast and responsive predictions
 
-## 🚀 Installation Guide
+---
 
-### Prerequisites
-* **Python 3.10.11**: [Download for Windows](https://www.python.org/ftp/python/3.10.11/python-3.10.11-amd64.exe) or [Download for macOS](https://www.python.org/ftp/python/3.10.11/python-3.10.11-macos11.pkg).
-* **Webcam**: Needed for real-time sign recognition.
+## 🏗️ How It Works
 
-### Setup Steps
-1. **Clone the repository**:
-   ```bash
-   git clone [https://github.com/Atiqumer/SignSpeakAI](https://github.com/Atiqumer/SignSpeakAI)
-   cd SignSpeak-AI
+```text
+Webcam → Hand Detection → Landmark Extraction → Model Prediction → Text → Speech
+```
 
+---
 
-### Create a Virtual Environment:
+## 📂 Project Structure
 
-Windows: python -m venv venv
+```text
+SignSpeakAI/
+│── realtime_sign.py        # Run real-time detection
+│── train_signspeak.py      # Train the model
+│── signspeak_model.keras   # Trained AI model
+│── hand_landmarker.task    # MediaPipe model
+│── label_map.npy           # Labels
+│── signspeak_ui.py         # UI (optional)
+│── requirements.txt        # Dependencies
+```
 
-macOS: python3 -m venv venv
+---
 
-Activate the Environment:
+## ⚙️ Installation
 
-Windows: .\venv\Scripts\activate
+### 1️⃣ Clone Repository
 
-macOS: source venv/bin/activate
+```bash
+git clone https://github.com/Atiqumer/SignSpeakAI.git
+cd SignSpeakAI
+```
 
-Install Required Libraries:
+---
 
-Bash
-pip install -r requirements.txt
-Download the Task File:
-Download the Hand Landmarker Task File and place it directly in the project folder.
+## 💻 Setup Guide (Windows / Linux / macOS)
 
-### 👤 User Guide (For Non-Technical Users)
-You don't need to be a coder to use this project! Follow these simple steps to start translating signs and see how accurate the AI is.
+| Step | Windows | Linux | macOS |
+|------|--------|-------|-------|
+| Create venv | `python -m venv venv` | `python3 -m venv venv` | `python3 -m venv venv` |
+| Activate venv | `venv\Scripts\activate` | `source venv/bin/activate` | `source venv/bin/activate` |
+| Upgrade pip | `pip install --upgrade pip` | `pip install --upgrade pip` | `pip install --upgrade pip` |
+| Install deps | `pip install -r requirements.txt` | `pip install -r requirements.txt` | `pip install -r requirements.txt` |
 
-## How to use the Translator
-Open your Terminal (Command Prompt on Windows or Terminal on Mac) and navigate to the project folder.
+---
 
-Start the program by typing:
+## 🚀 Quick Start
+
+Run the real-time system:
+
+```bash
 python realtime_sign.py
+```
 
-Position your hand in front of your webcam. Make a sign for a letter (like 'A' or 'B').
+---
 
-Watch and Listen:
+## ▶️ Usage
 
-A green skeleton will appear over your hand on the screen.
+1. Open webcam  
+2. Show your hand in front of camera  
+3. Make a sign (A, B, C...)  
+4. System will:
+   - Detect the sign  
+   - Show prediction on screen  
+   - Speak the letter  
 
-The predicted letter and the AI's confidence percentage will appear at the top.
+👉 Press **`q`** to exit  
 
-The computer will speak the letter aloud.
+---
 
-To Close: Press the 'q' key on your keyboard.
+## ⚙️ Configuration
 
-## How to verify the Model's Accuracy
-While using the translator, look at the Percentage (%) next to the predicted letter:
+You can change settings inside the code:
 
-90% - 100%: The AI is extremely confident in its result.
+- Detection confidence  
+- Tracking confidence  
+- Model file (`.keras`)  
+- Labels file (`.npy`)  
+- Speech delay timing  
 
-Below 70%: The AI is uncertain. Try improving your lighting or making the sign more clearly.
+---
 
-For a deeper look at accuracy, you can view the training results in the AI_Model.ipynb file, which shows how the model learned to reach a 98.8% success rate during testing.
+## 🧠 Train Your Own Model
 
-### 🏗️ Project Structure
-train_signspeak.py: The script used to "teach" the AI using the dataset.
+```bash
+python train_signspeak.py
+```
 
-realtime_sign.py: The main app that turns your webcam into a translator.
+---
 
-hand_landmarker.task: The "eyes" of the project that find your hand joints.
+## 🤝 Contributing
 
-requirements.txt: The list of "ingredients" (libraries) the project needs to run.
+Contributions are welcome!
 
-### License
-This project is licensed under the MIT License.
+Steps:
+1. Fork the repo  
+2. Create a new branch  
+3. Make changes  
+4. Submit a Pull Request  
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## ❗ Troubleshooting
+
+| Problem | Solution |
+|--------|---------|
+| Webcam not working | Check camera permissions |
+| Model not loading | Make sure model file exists |
+| No detection | Improve lighting |
+| Wrong predictions | Use clear hand gestures |
+
+---
+
+## 💡 Future Improvements
+
+- Full sentence recognition  
+- Offline speech support  
+- Mobile app version  
+- Multi-hand detection  
+
+---
+
+## ⭐ Support
+
+If you like this project, give it a ⭐ on GitHub!
