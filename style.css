@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container */
+.container {
+    width: 95%;
+    max-width: 1200px;
+}
+
+/* Title */
+.title {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Dashboard Layout */
+.dashboard {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+/* Video Card */
+.video-card {
+    position: relative;
+    height: 500px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: black;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+video, canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Controls Card */
+.controls-card {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Inputs */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+label {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+input {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+/* Buttons */
+button {
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Primary Button */
+#submitBtn {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+}
+
+#submitBtn:hover {
+    transform: scale(1.05);
+}
+
+/* Secondary Buttons */
+.btn-row {
+    display: flex;
+    gap: 10px;
+}
+
+#clearBtn {
+    flex: 1;
+    background: #ff4d4d;
+    color: white;
+}
+
+#generateBtn {
+    flex: 1;
+    background: #00d084;
+    color: white;
+}
+
+#clearBtn:hover,
+#generateBtn:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .video-card {
+        height: 300px;
+    }
+}

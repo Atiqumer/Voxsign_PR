@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignSpeak AI</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs" type="module"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 class="title">🤟 SignSpeak AI</h1>
+
+    <div class="dashboard">
+
+        <!-- LEFT: Video -->
+        <div class="video-card">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="output_canvas"></canvas>
+        </div>
+
+        <!-- RIGHT: Controls -->
+        <div class="controls-card">
+
+            <div class="input-group">
+                <label>Predicted Alphabet</label>
+                <input type="text" id="predictedAlphabet" readonly>
+            </div>
+
+            <button id="submitBtn">➕ Add Letter</button>
+
+            <div class="input-group">
+                <label>Word</label>
+                <input type="text" id="cumulativeWord" readonly>
+            </div>
+
+            <div class="btn-row">
+                <button id="clearBtn">🗑 Clear</button>
+                <button id="generateBtn">✨ Generate</button>
+            </div>
+
+            <div class="input-group">
+                <label>Generated Sentence</label>
+                <input type="text" id="generatedSentence" readonly>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="script.js" type="module"></script>
+
+</body>
+</html>

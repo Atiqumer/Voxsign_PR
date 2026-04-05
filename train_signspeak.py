@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 
 # --- 1. SETTINGS ---
 # Since you already unzipped, we point directly to the folder
-DATASET_PATH = 'dataset' 
+DATASET_PATH = 'dataset'
 TRAIN_DIR = os.path.join(DATASET_PATH, 'Train_Alphabet')
 MODEL_NAME = 'signspeak_model.keras'
 
@@ -47,7 +47,7 @@ for class_name, label_id in label_map.items():
                 temp_coords = []
                 for lm in lm_list:
                     temp_coords.extend([lm.x - wrist.x, lm.y - wrist.y, lm.z - wrist.z])
-                
+   
                 # Normalization Step 2: Scale/Zoom (makes it distance-independent)
                 max_val = max(max(temp_coords), abs(min(temp_coords)))
                 if max_val == 0: max_val = 1 # Prevent division by zero
