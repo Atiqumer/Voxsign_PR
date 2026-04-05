@@ -7,6 +7,7 @@ const ctx = canvas.getContext("2d");
 const alphabetBox = document.getElementById("predictedAlphabet");
 const wordBox = document.getElementById("cumulativeWord");
 const sentenceBox = document.getElementById("generatedSentence");
+const imageUpload = document.getElementById("imageUpload"); // NEW: File Input
 
 // Variables
 let handLandmarker;
@@ -30,7 +31,7 @@ async function initialize() {
             baseOptions: { 
                 modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task" 
             },
-            runningMode: "VIDEO", 
+            runningMode: "VIDEO", // Keep VIDEO for webcam, we will switch for images
             numHands: 1
         });
 
@@ -38,7 +39,7 @@ async function initialize() {
         model = await tf.loadLayersModel('./web_model/model.json');
         console.log("✅ AI Model Loaded!");
 
-        // 3. Start Camera (In a way that doesn't block the UI)
+        // 3. Start Camera
         setupCamera();
 
     } catch (error) {
@@ -48,21 +49,16 @@ async function initialize() {
 }
 
 async function setupCamera() {
-    const constraints = {
-        video: { width: 640, height: 480 }
-    };
-
+    const constraints = { video: { width: 640, height: 480 } };
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     video.srcObject = stream;
-    
-    // Once the video starts playing, begin the AI loop
     video.onloadedmetadata = () => {
         video.play();
         predictWebcam();
     };
 }
 
-// Draw the red tracking box
+// Helper to draw UI elements
 function drawUI(landmarks) {
     const x = landmarks.map(l => l.x * canvas.width);
     const y = landmarks.map(l => l.y * canvas.height);
@@ -78,98 +74,115 @@ function drawUI(landmarks) {
     ctx.fillText("HAND DETECTED", minX - 20, minY - 30);
 }
 
-// The Normalization (Matches your Python Logic)
+// The Normalization
 function processLandmarks(landmarks) {
     const wrist = landmarks[0];
     let coords = [];
-
-    // Make relative to wrist
     for (let i = 0; i < landmarks.length; i++) {
         coords.push(landmarks[i].x - wrist.x);
         coords.push(landmarks[i].y - wrist.y);
         coords.push(landmarks[i].z - wrist.z);
     }
-
-    // Scaling: This is the most important part for accuracy
     const maxVal = Math.max(...coords.map(Math.abs)) || 1;
     return coords.map(c => c / maxVal);
 }
 
-async function predictWebcam() {
-    canvas.width = video.videoWidth; 
-    canvas.height = video.videoHeight;
+// Prediction logic shared between Webcam and Uploads
+async function runInference(landmarks) {
+    const inputData = processLandmarks(landmarks);
+    const inputTensor = tf.tensor2d(inputData, [1, 63]);
+    const prediction = model.predict(inputTensor);
+    const scores = await prediction.data();
+    
+    let maxIdx = 0;
+    let maxScore = -1;
+    for (let i = 0; i < scores.length; i++) {
+        if (scores[i] > maxScore) {
+            maxScore = scores[i];
+            maxIdx = i;
+        }
+    }
 
+    const detectedLabel = labelMap[maxIdx];
+
+    if (maxScore > 0.75 && detectedLabel !== "Blank") {
+        alphabetBox.value = detectedLabel;
+        currentPrediction = detectedLabel;
+    } else if (detectedLabel === "Blank") {
+        alphabetBox.value = "---";
+        currentPrediction = "";
+    }
+
+    inputTensor.dispose();
+    prediction.dispose();
+}
+
+// WEBCAM LOOP
+async function predictWebcam() {
     if (video.currentTime !== lastVideoTime) {
+        canvas.width = video.videoWidth; 
+        canvas.height = video.videoHeight;
         lastVideoTime = video.currentTime;
-        const result = handLandmarker.detectForVideo(video, performance.now());
         
+        const result = handLandmarker.detectForVideo(video, performance.now());
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         if (result.landmarks && result.landmarks.length > 0) {
-            const hand = result.landmarks[0];
-            drawUI(hand);
-
-            // 1. Process Landmarks
-            const inputData = processLandmarks(hand);
-            const inputTensor = tf.tensor2d(inputData, [1, 63]);
-            const prediction = model.predict(inputTensor);
-            const scores = await prediction.data();
-            
-            // 4. Find the Index with the highest probability
-            let maxIdx = 0;
-            let maxScore = -1;
-            for (let i = 0; i < scores.length; i++) {
-                if (scores[i] > maxScore) {
-                    maxScore = scores[i];
-                    maxIdx = i;
-                }
-            }
-
-            const detectedLabel = labelMap[maxIdx];
-
-            if (maxScore > 0.75 && detectedLabel !== "Blank") {
-                alphabetBox.value = detectedLabel;
-                currentPrediction = detectedLabel;
-            } else if (detectedLabel === "Blank") {
-                alphabetBox.value = "---"; // Show something else for Blank
-                currentPrediction = "";
-                }
-                
-            // 6. Cleanup to prevent memory leaks
-            inputTensor.dispose();
-            prediction.dispose();
+            drawUI(result.landmarks[0]);
+            await runInference(result.landmarks[0]);
         }
     }
     window.requestAnimationFrame(predictWebcam);
 }
 
-// --- BUTTON EVENT LISTENERS ---
+// NEW: IMAGE UPLOAD HANDLER
+imageUpload.addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+
+    img.onload = async () => {
+        // Stop the webcam loop momentarily by clearing srcObject if you want a freeze frame effect
+        // or just draw the image over the canvas
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+
+        // Change mode to IMAGE for better static accuracy
+        await handLandmarker.setOptions({ runningMode: "IMAGE" });
+        const result = await handLandmarker.detect(img);
+
+        if (result.landmarks && result.landmarks.length > 0) {
+            drawUI(result.landmarks[0]);
+            await runInference(result.landmarks[0]);
+        } else {
+            alert("No hand landmarks detected in this image.");
+        }
+
+        // Switch back to VIDEO mode for the webcam
+        await handLandmarker.setOptions({ runningMode: "VIDEO" });
+    };
+});
+
+// --- BUTTON EVENT LISTENERS ---
 document.getElementById("submitBtn").addEventListener("click", () => {
-    if (currentPrediction) {
-        wordBox.value += currentPrediction;
-    }
+    if (currentPrediction) wordBox.value += currentPrediction;
 });
 
 document.getElementById("clearBtn").addEventListener("click", () => {
-    wordBox.value = ""; 
-    sentenceBox.value = ""; 
-    currentPrediction = "";
-    alphabetBox.value = "";
+    wordBox.value = ""; sentenceBox.value = ""; currentPrediction = ""; alphabetBox.value = "";
 });
 
 document.getElementById("generateBtn").addEventListener("click", () => {
     const word = wordBox.value;
     if (word) {
         sentenceBox.value = `The user signed: ${word}`;
-        
-        // Native Web Speech (Built into Browser)
         const speech = new SpeechSynthesisUtterance(word);
-        speech.lang = 'en-US';
-        speech.rate = 0.9;
         window.speechSynthesis.speak(speech);
     }
 });
 
-// Start the whole process
 initialize();

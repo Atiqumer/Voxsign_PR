@@ -17,6 +17,7 @@ body {
 .container {
     width: 95%;
     max-width: 1200px;
+    padding: 20px;
 }
 
 /* Title */
@@ -25,12 +26,20 @@ body {
     color: white;
     margin-bottom: 20px;
     font-weight: 600;
+    font-size: 2rem;
 }
 
 /* Dashboard Layout */
 .dashboard {
     display: grid;
     grid-template-columns: 2fr 1fr;
+    gap: 25px;
+}
+
+/* Left Panel containing Video and Upload */
+.left-panel {
+    display: flex;
+    flex-direction: column;
     gap: 20px;
 }
 
@@ -38,10 +47,11 @@ body {
 .video-card {
     position: relative;
     height: 500px;
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
-    background: black;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    background: #000;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 video, canvas {
@@ -51,91 +61,153 @@ video, canvas {
     object-fit: cover;
 }
 
-/* Controls Card */
-.controls-card {
-    backdrop-filter: blur(20px);
+/* --- NEW: Upload Card Styling --- */
+.upload-card {
     background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
     border-radius: 20px;
     padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.upload-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #00c6ff;
+}
+
+.upload-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: white;
+    color: #1e3c72;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-bottom: 8px;
+}
+
+.upload-btn:hover {
+    background: #00c6ff;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.upload-tip {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+}
+
+/* Controls Card */
+.controls-card {
+    backdrop-filter: blur(25px);
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 25px;
     color: white;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    gap: 18px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: fit-content;
 }
 
 /* Inputs */
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
 }
 
 label {
-    font-size: 13px;
-    opacity: 0.8;
+    font-size: 14px;
+    font-weight: 500;
+    color: #00c6ff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 input {
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    background: rgba(255,255,255,0.2);
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     outline: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+input:focus {
+    border-color: #00c6ff;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* Buttons */
 button {
-    padding: 12px;
-    border-radius: 12px;
+    padding: 14px;
+    border-radius: 14px;
     border: none;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: "Poppins", sans-serif;
 }
 
 /* Primary Button */
 #submitBtn {
     background: linear-gradient(135deg, #00c6ff, #0072ff);
     color: white;
+    font-size: 16px;
+    box-shadow: 0 8px 20px rgba(0, 114, 255, 0.3);
 }
 
 #submitBtn:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
+    box-shadow: 0 10px 25px rgba(0, 114, 255, 0.5);
 }
 
 /* Secondary Buttons */
 .btn-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 #clearBtn {
     flex: 1;
-    background: #ff4d4d;
-    color: white;
+    background: rgba(255, 77, 77, 0.2);
+    color: #ff4d4d;
+    border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 #generateBtn {
     flex: 1;
+    background: rgba(0, 208, 132, 0.2);
+    color: #00d084;
+    border: 1px solid rgba(0, 208, 132, 0.3);
+}
+
+#clearBtn:hover {
+    background: #ff4d4d;
+    color: white;
+}
+
+#generateBtn:hover {
     background: #00d084;
     color: white;
 }
 
-#clearBtn:hover,
-#generateBtn:hover {
-    transform: scale(1.05);
-}
-
 /* Responsive */
-@media (max-width: 900px) {
+@media (max-width: 950px) {
     .dashboard {
         grid-template-columns: 1fr;
     }
 
     .video-card {
-        height: 300px;
+        height: 350px;
     }
 }

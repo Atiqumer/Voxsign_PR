@@ -7,7 +7,6 @@
 
     <link rel="stylesheet" href="style.css">
 
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
@@ -22,13 +21,21 @@
 
     <div class="dashboard">
 
-        <!-- LEFT: Video -->
-        <div class="video-card">
-            <video id="webcam" autoplay playsinline></video>
-            <canvas id="output_canvas"></canvas>
+        <div class="left-panel">
+            <div class="video-card">
+                <video id="webcam" autoplay playsinline></video>
+                <canvas id="output_canvas"></canvas>
+            </div>
+
+            <div class="upload-card">
+                <label for="imageUpload" class="upload-btn">
+                    <span>📁 Upload Image to Analyze</span>
+                    <input type="file" id="imageUpload" accept="image/*" hidden>
+                </label>
+                <p class="upload-tip">Supports JPG, PNG</p>
+            </div>
         </div>
 
-        <!-- RIGHT: Controls -->
         <div class="controls-card">
 
             <div class="input-group">
