@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Voxasign — AI Gesture Studio</title>
+    <title>Voxasign — The Professional ASL AI Studio</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <style>
       :root {
@@ -16,7 +16,7 @@
         --border-glass: rgba(255, 255, 255, 0.1);
       }
 
-      * { margin: 0; padding: 0; box-sizing: border-box; }
+      * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
       body {
         font-family: "Nunito", sans-serif;
         background: var(--bg-dark);
@@ -25,6 +25,7 @@
                           radial-gradient(at 100% 100%, hsla(200, 100%, 10%, 1) 0, transparent 50%);
         min-height: 100vh;
         line-height: 1.6;
+        overflow-x: hidden;
       }
 
       /* Navbar */
@@ -32,89 +33,106 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 5%;
+        padding: 15px 5%;
         backdrop-filter: blur(12px);
         background: var(--card-glass);
         border-bottom: 1px solid var(--border-glass);
         position: sticky; top: 0; z-index: 1000;
       }
 
-      .logo-box { display: flex; align-items: center; gap: 15px; }
+      .logo-box { display: flex; align-items: center; gap: 12px; }
       .logo-icon {
-        width: 45px; height: 45px;
+        width: 40px; height: 40px;
         background: var(--blue-glow);
         border: 1.5px solid var(--electric-blue);
-        border-radius: 14px;
+        border-radius: 10px;
         display: flex; align-items: center; justify-content: center;
         color: var(--electric-blue);
-        box-shadow: 0 0 20px var(--blue-glow);
       }
-      .logo-name { font-family: "Lora", serif; font-size: 1.4rem; font-weight: 600; }
+      .logo-name { font-family: "Lora", serif; font-size: 1.3rem; font-weight: 600; }
       .logo-name span { color: var(--electric-blue); }
 
-      /* Hero */
-      header.hero {
+      /* Hero Section with Video */
+      .hero {
+        position: relative;
+        padding: 100px 5%;
         text-align: center;
-        padding: 100px 20px;
-        max-width: 900px;
-        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
-      .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 24px; }
+
+      .video-container {
+        width: 100%;
+        max-width: 1000px;
+        margin-top: 40px;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid var(--border-glass);
+        box-shadow: 0 0 50px rgba(56, 189, 248, 0.1);
+        background: #000;
+      }
+
+      video { width: 100%; display: block; }
+
+      .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; max-width: 800px; }
       .hero h1 span { color: var(--electric-blue); }
-      .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 40px; }
+      .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; max-width: 650px; }
 
       .btn-main {
         background: var(--electric-blue);
         color: var(--bg-dark);
-        padding: 18px 36px;
-        border-radius: 14px;
+        padding: 16px 32px;
+        border-radius: 12px;
         font-weight: 800;
         text-decoration: none;
-        box-shadow: 0 10px 30px var(--blue-glow);
         transition: 0.3s;
         display: inline-block;
       }
-      .btn-main:hover { transform: translateY(-5px); box-shadow: 0 15px 40px var(--blue-glow); }
+      .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 30px var(--blue-glow); }
 
-      /* Learning/Game Section */
+      /* Compact Alphabet Grid */
       .section { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
-      .section-header { text-align: center; margin-bottom: 50px; }
-      .section-header h2 { font-size: 2.2rem; font-family: "Lora"; }
+      .section-header { text-align: center; margin-bottom: 40px; }
+      .section-header h2 { font-size: 2.2rem; font-family: "Lora"; margin-bottom: 10px; }
 
-      .learn-grid {
+      .alpha-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 25px;
+        grid-template-columns: repeat(7, 1fr); /* 7 per row on desktop */
+        gap: 15px;
+        margin-bottom: 50px;
       }
-      .sign-card {
+
+      .alpha-card {
         background: var(--card-glass);
         border: 1px solid var(--border-glass);
-        padding: 30px;
-        border-radius: 24px;
+        padding: 15px 10px;
+        border-radius: 15px;
         text-align: center;
-        transition: 0.3s;
+        transition: 0.2s;
       }
-      .sign-card:hover { border-color: var(--electric-blue); background: rgba(56, 189, 248, 0.05); }
-      .sign-card img { width: 100px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--blue-glow)); }
-      .sign-card h3 { color: var(--electric-blue); font-size: 1.5rem; }
+      .alpha-card:hover { border-color: var(--electric-blue); background: rgba(56, 189, 248, 0.05); transform: scale(1.05); }
+      .alpha-card img { width: 45px; height: 45px; margin-bottom: 8px; filter: brightness(1.2); }
+      .alpha-card span { display: block; font-weight: 800; color: var(--electric-blue); font-size: 0.9rem; }
 
       /* Challenge Banner */
       .game-box {
         background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, transparent 100%);
         border: 1px solid var(--electric-blue);
-        padding: 50px;
+        padding: 60px 40px;
         border-radius: 30px;
         text-align: center;
-        margin-top: 50px;
       }
-      .game-box h2 { font-size: 2.5rem; margin-bottom: 15px; }
-      .game-box p { margin-bottom: 30px; font-size: 1.1rem; }
 
-      footer { text-align: center; padding: 40px; color: var(--text-muted); opacity: 0.6; font-size: 0.9rem; }
+      footer { text-align: center; padding: 50px; color: var(--text-muted); font-size: 0.8rem; }
 
-      @media (max-width: 768px) {
-        .hero h1 { font-size: 2.5rem; }
+      /* Tablet/Mobile Adjustments */
+      @media (max-width: 1024px) { .alpha-grid { grid-template-columns: repeat(5, 1fr); } }
+      @media (max-width: 768px) { 
+        .hero h1 { font-size: 2.5rem; } 
+        .alpha-grid { grid-template-columns: repeat(4, 1fr); }
       }
+      @media (max-width: 480px) { .alpha-grid { grid-template-columns: repeat(3, 1fr); } }
     </style>
   </head>
   <body>
@@ -125,46 +143,58 @@
         </div>
         <div class="logo-name">Voxa<span>sign</span></div>
       </div>
-      <a href="studio.html" class="btn-main" style="padding: 10px 20px; font-size: 0.9rem;">Try Studio</a>
+      <a href="https://voxasign.netlify.app/" class="btn-main" style="padding: 10px 20px; font-size: 0.85rem;">Launch Studio</a>
     </nav>
 
     <header class="hero">
       <h1>The Future of <span>Inclusive</span> Communication</h1>
-      <p>Voxasign is a professional-grade AI studio that translates American Sign Language (ASL) into speech in real-time. Built to empower the Deaf community with the power of Edge-AI.</p>
-      <a href="#challenge" class="btn-main">Take the Challenge</a>
+      <p>Bridge the gap between sign language and speech with our real-time Edge AI interpreter.</p>
+      <a href="#challenge" class="btn-main">Join the Challenge</a>
+
+      <div class="video-container">
+        <video autoplay muted loop playsinline disablePictureInPicture controlsList="nodownload">
+          <source src="voxa.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </header>
 
     <section class="section">
       <div class="section-header">
-        <h2>Learn the Basics</h2>
-        <p>Before you test the AI, try mastering these simple signs.</p>
+        <h2>Alphabet Mastery</h2>
+        <p>Master the signs below to achieve 100% accuracy in the studio.</p>
       </div>
-      <div class="learn-grid">
-        <div class="sign-card">
-          <img src="https://img.icons8.com/ios/100/38bdf8/sign-language-h.png" alt="H">
-          <h3>Hello (H)</h3>
-        </div>
-        <div class="sign-card">
-          <img src="https://img.icons8.com/ios/100/38bdf8/sign-language-t.png" alt="T">
-          <h3>Thank (T)</h3>
-        </div>
-        <div class="sign-card">
-          <img src="https://img.icons8.com/ios/100/38bdf8/sign-language-y.png" alt="Y">
-          <h3>You (Y)</h3>
-        </div>
-      </div>
-    </section>
 
-    <section class="section" id="challenge">
-      <div class="game-box">
-        <h2>Sign & Win Challenge 🏆</h2>
-        <p>Master the signs above in the studio with <b>95% accuracy</b>. <br>Capture a screenshot of your score, post it on LinkedIn, and tag us to get featured!</p>
-        <a href="studio.html" class="btn-main">Launch Studio & Play</a>
+      <div class="alpha-grid" id="alphaGrid">
+        </div>
+
+      <div class="game-box" id="challenge">
+        <h2 style="font-family: Lora; margin-bottom: 20px;">Sign & Win Challenge 🏆</h2>
+        <p style="margin-bottom: 25px;">Achieve <b>95% accuracy</b> on any word in the studio, share your results on LinkedIn, and tag us to join the global leaderboard!</p>
+        <a href="https://voxasign.netlify.app/" class="btn-main">Start Your Challenge</a>
       </div>
     </section>
 
     <footer>
-      Voxasign — Bridging the Silence with AI.
+      Voxasign — Empowering Silence through Artificial Intelligence.
     </footer>
+
+    <script>
+      // Automatically generate A-Z cards
+      const alphaGrid = document.getElementById('alphaGrid');
+      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+      alphabet.forEach(letter => {
+        const card = document.createElement('div');
+        card.className = 'alpha-card';
+        // Logic: assumes you have icons named signs/a.png, signs/b.png etc. 
+        // If using external URL, replace the src below.
+        card.innerHTML = `
+          <img src="signs/${letter.toLowerCase()}.png" alt="Sign ${letter}" onerror="this.src='https://img.icons8.com/ios/50/38bdf8/sign-language-${letter.toLowerCase()}.png'">
+          <span>${letter}</span>
+        `;
+        alphaGrid.appendChild(card);
+      });
+    </script>
   </body>
 </html>
