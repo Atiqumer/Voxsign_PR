@@ -13,6 +13,8 @@ let currentPrediction = "";
 let lastVideoTime = -1;
 let activeMode = null; // 'live' | 'upload'
 let cameraStream = null;
+let currentFacingMode = "user"; // 'user' (front) or 'environment' (back)
+let availableCameras = [];
 
 // Expose prediction to parent UI
 window.currentPrediction = "";
@@ -56,18 +58,71 @@ async function initialize() {
 }
 
 // ── CAMERA ──
-async function startCamera() {
-    if (cameraStream) return; // already running
+async function getCameraDevices() {
     try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        availableCameras = devices.filter(device => device.kind === 'videoinput');
+        console.log(`Found ${availableCameras.length} camera(s)`);
+        return availableCameras;
+    } catch (err) {
+        console.error("Error enumerating devices:", err);
+        return [];
+    }
+}
+
+async function startCamera(facingMode = currentFacingMode) {
+    if (cameraStream) {
+        stopCamera(); // Stop existing stream first
+    }
+    
+    try {
+        // Check if we're on mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // On mobile, default to back camera (environment)
+        if (isMobile && facingMode === "user" && activeMode === 'live') {
+            facingMode = "environment";
+        }
+        
+        currentFacingMode = facingMode;
+        
+        const constraints = {
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: { ideal: facingMode }
+            }
+        };
+        
+        console.log(`Starting camera with facingMode: ${facingMode}`);
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = cameraStream;
+        
         video.onloadedmetadata = () => {
             video.play();
             predictWebcam();
+            
+            // Show/update camera switch button
+            if (window.updateCameraSwitchButton) {
+                window.updateCameraSwitchButton(true);
+            }
         };
+        
+        // Get actual camera info
+        const videoTrack = cameraStream.getVideoTracks()[0];
+        const settings = videoTrack.getSettings();
+        console.log(`✅ Camera started: ${settings.facingMode || 'unknown'} (${settings.width}x${settings.height})`);
+        
     } catch (err) {
         console.error("Camera access denied:", err);
+        alert("Camera access denied. Please grant camera permission and try again.");
     }
+}
+
+async function switchCamera() {
+    const newFacingMode = currentFacingMode === "user" ? "environment" : "user";
+    console.log(`Switching camera from ${currentFacingMode} to ${newFacingMode}`);
+    await startCamera(newFacingMode);
 }
 
 function stopCamera() {
@@ -75,8 +130,16 @@ function stopCamera() {
         cameraStream.getTracks().forEach(t => t.stop());
         cameraStream = null;
         video.srcObject = null;
+        
+        // Hide camera switch button
+        if (window.updateCameraSwitchButton) {
+            window.updateCameraSwitchButton(false);
+        }
     }
 }
+
+// Expose camera switch function globally
+window.switchCamera = switchCamera;
 
 // ── MODE CHANGE LISTENER ──
 window.addEventListener('modeChange', async (e) => {

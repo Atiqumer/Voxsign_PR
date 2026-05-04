@@ -451,6 +451,18 @@
           <div id="liveView">
             <video id="webcam" autoplay playsinline></video>
             <canvas id="output_canvas"></canvas>
+            
+            <!-- Camera Switch Button -->
+            <div class="floating-actions" id="cameraSwitchBar" style="display: none;">
+              <button
+                class="icon-btn"
+                id="switchCameraBtn"
+                title="Switch Camera"
+                onclick="window.switchCamera()"
+              >
+                🔄
+              </button>
+            </div>
           </div>
 
           <div id="uploadView">
@@ -602,11 +614,19 @@
       const imageCanvas = document.getElementById("image_canvas");
       const dropZone = document.getElementById("dropZone");
       const actionsBar = document.getElementById("uploadActionsBar");
+      const cameraSwitchBar = document.getElementById("cameraSwitchBar");
 
       let activeMode = null;
       let letterCount = 0,
         wordCount = 0;
       let wordBuffer = "";
+
+      // Function to show/hide camera switch button
+      window.updateCameraSwitchButton = function(show) {
+        if (cameraSwitchBar) {
+          cameraSwitchBar.style.display = show ? "flex" : "none";
+        }
+      };
 
       function setMode(mode) {
         activeMode = mode;
@@ -619,9 +639,15 @@
         wsCorner.textContent = mode === "live" ? "● LIVE" : "📁 PHOTO";
         if (mode === "upload") {
           imageUpload.click();
+          // Hide camera switch button in upload mode
+          if (window.updateCameraSwitchButton) {
+            window.updateCameraSwitchButton(false);
+          }
+        }
+        if (mode === "live") {
+          actionsBar.style.display = "none";
         }
         window.dispatchEvent(new CustomEvent("modeChange", { detail: mode }));
-        if (mode === "live") actionsBar.style.display = "none";
       }
 
       liveTile.addEventListener("click", () => {
