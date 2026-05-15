@@ -13,7 +13,10 @@ let currentPrediction = "";
 let lastVideoTime = -1;
 let activeMode = null; // 'live' | 'upload'
 let cameraStream = null;
-let currentFacingMode = "user"; // 'user' (front) or 'environment' (back)
+
+// Detect if mobile and set default camera
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+let currentFacingMode = isMobile ? "environment" : "user"; // Default to back camera on mobile, front on desktop
 let availableCameras = [];
 
 // Auto-detection state
@@ -82,14 +85,7 @@ async function startCamera(facingMode = currentFacingMode) {
     }
     
     try {
-        // Check if we're on mobile
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
-        // On mobile, default to back camera (environment)
-        if (isMobile && facingMode === "user" && activeMode === 'live') {
-            facingMode = "environment";
-        }
-        
+        // Update current facing mode
         currentFacingMode = facingMode;
         
         const constraints = {
